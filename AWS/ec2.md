@@ -31,3 +31,9 @@ sudo vim /etc/hosts
 ``` shell
 curl hostname
 ```
+
+### 결과
+```  shell
+Could not resolve host ~  // 등록 실패
+Fail to connect to ~      // 등록 성공
+```
