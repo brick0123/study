@@ -37,3 +37,93 @@ FROM [이미지명]@[다이제스트]
 ``` shell
 docker build -t [생성할 이미지명]:[태그명] [Dcokerfile의 위치]
 ```
+
+</br></br>
+
+### 1. Shell 형식으로 기술
+명령의 지정을 쉘에서 실행하는 형식으로 기술하는 방법.</br>
+ex: Shell 형식의 Run 명령어
+
+``` shell
+# Nginx의 설치
+RUN -apt install -y nginx
+```
+
+이것은 Docker 컨테이너 안에서 /bin/sh -c를 사용하여 명령 했을 때와 똑같이 작동한다. Docker 컨테이너에서 실행할 기본 쉘을 변경하고 싶을 때는 SHELL 명령을 사용한다.
+
+### 2. Exec 형식으로 기술
+Shell 형식으로 명령을 기술하면 /bin/sh에서 실행되지만, Exec 형식은 쉘을 경우하지 않고 직접 실행한다. 따라서 명령 인수에 $HOME과 같은 환경 변수를 지정할 수 없다. Exec 형식은 명령을 JSON 배열로 지정한다.
+</br>
+다른 쉘을 이용하고 싶을 때는 RUN 명령에 쉘의 경로를 지정한 후 실행하고 싶은 명령 지정. ex) /bin/bash에서 apt 명령을 사용하여 Nginx를 설치
+
+``` java
+# Nginx의 설치
+RUN ["/bin/bash", "-c", "apt install -y nginx"]
+```
+문자열을 인수로 지정할 때는 홀따옴표를 사용한다.
+
+</br>
+여러개 기술하기
+
+``` shell
+# 베이스 이미지 설정
+FROM ubuntu:latest
+
+# RUN 명령의 실행
+RUN echo 안녕하세요 Shell 형식입니다
+RUN ["echo", " 안녕하세요 Exex 형식입니다 "]
+RUN ["/bin/bash", "-c", "echo '안녕하세요 Exec 형식에서 Bash를 사용 했습니다 ' "]
+````
+
+``` shell
+# 이미지 레이어
+RUN yum -y install httpd php php-mbstring php-pear
+
+# 가독성 향상
+
+RUN yum -y install \
+            httpd\
+            php\
+            php-mbstring\
+            php-pear
+```
+
+</br>
+
+RUN 명령은 이미지를 작성하기 위해 실행하는 명령을 기술하지만, 이미지를 바탕으로 생성된 컨테이너 안에서 명령을 실행하려면 CMD를 사용한다. Dcokerfile에는 하나의 CMD 명령을 기술할 수 있다. (여러개 지정시 마지막 명령만 유효)
+
+``` shell
+CMD [실행하고 싶은 명령]
+```
+
+## CMD 명령
+
+### 1. Exec 형식으로 기술.
+RUN 명령의 구문과 동일.
+
+``` shell
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+### 2.Shell 형식으로 기술.
+RUN 명령의 구문과 동일.
+
+``` shell
+CMD nginx -g 'daemon off;'
+```
+### ENTRYPOINT 명령의 파라미터로 기술
+
+``` shell
+# 베이스 이미지 설명
+FROM ubuntu:16.04
+
+# Nginx 설치
+RUN apt -y update && apt -y upgrade 
+RUN apt -y install nginx
+
+# 포트 지정
+EXPOSE 80
+
+# 서버 실ㅇ행
+CMD ["nginx", "-g", "daemon off;"]
+```
