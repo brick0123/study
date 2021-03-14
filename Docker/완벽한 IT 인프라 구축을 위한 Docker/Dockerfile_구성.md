@@ -82,9 +82,9 @@ RUN yum -y install httpd php php-mbstring php-pear
 # 가독성 향상
 
 RUN yum -y install \
-            httpd\
-            php\
-            php-mbstring\
+            httpd \
+            php \
+            php-mbstring \
             php-pear
 ```
 
@@ -111,7 +111,7 @@ RUN 명령의 구문과 동일.
 ``` shell
 CMD nginx -g 'daemon off;'
 ```
-### ENTRYPOINT 명령의 파라미터로 기술
+### 3.ENTRYPOINT 명령의 파라미터로 기술
 
 ``` shell
 # 베이스 이미지 설명
@@ -124,6 +124,29 @@ RUN apt -y install nginx
 # 포트 지정
 EXPOSE 80
 
-# 서버 실ㅇ행
+# 서버 실행
 CMD ["nginx", "-g", "daemon off;"]
 ```
+
+ENTRYPOINT 명령에서 지정한 명령느 도커파일에서 빌드한 이미지로부터 도커 컨테이너를 시작하기 때문에 Docker container run 명령을 실행했을 때 실행된다.
+
+``` shell
+ENTRYPOINT [명령]
+```
+
+### 1. Exec 형식
+
+``` shell
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
+```
+
+### 2. Shell 형식
+
+``` shell
+ENTRYPOINT nginx -g 'daemon off;'
+```
+
+
+ENTRYPOINT와 CMD의 차이.
+- CMD: dcoker container run 명령이 우선한다.
+- ENTRYPOINT: 반드시 컨테이너에서 실행됨. 실행 시 명령 인수를 지정하고 싶을때는 CMD 명령과 조합하여 사용.
