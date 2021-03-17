@@ -118,8 +118,8 @@ CMD nginx -g 'daemon off;'
 FROM ubuntu:16.04
 
 # Nginx 설치
-RUN apt -y update && apt -y upgrade 
-RUN apt -y install nginx
+RUN apt-get -y update && apt -y upgrade 
+RUN apt-get -y install nginx
 
 # 포트 지정
 EXPOSE 80
