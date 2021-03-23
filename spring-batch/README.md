@@ -14,6 +14,7 @@
 |Datbase|JPA|페이징 사용 가능
 |File|Flat file|지정한 구분자로 파싱 지원
 |File|XML|XML 파싱 지원
+<<<<<<< HEAD
 
 </br>
 
