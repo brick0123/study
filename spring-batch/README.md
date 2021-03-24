@@ -37,3 +37,27 @@ public Job simpleJob() {
         .build();
 }
 ```
+
+### Step
+- Job을 구성하는 처리 단위. 하나의 Job에 여러 Step이 포함될 수 있다. 조건부 수행, 병렬화 등 가능.
+
+``` java
+@Bean Step stepBean() {
+    return stepBuilderFactory.get("simpleStep1")
+    .tasklet((contribution, chunkContext) -> {
+        log.info(">>> This is Step1 <<<");
+         return RepeatStatus.FINISHED;
+    })
+    .build();
+}
+```
+
+## Meta-Data Schema
+
+
+![meta](../assets/spring-batch/batch-3.png)
+[reference](https://docs.spring.io/spring-batch/docs/current/reference/html/schema-appendix.html)
+
+
+### BATCH_JOB_INSTANCE
+- JobInstance와 관련된 정보를 담고있다. 전체 계층 구조의 최상위 역할을 한다.
