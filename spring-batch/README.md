@@ -61,3 +61,44 @@ public Job simpleJob() {
 
 ### BATCH_JOB_INSTANCE
 - JobInstance와 관련된 정보를 담고있다. 전체 계층 구조의 최상위 역할을 한다.
+
+같은 Batch Job이라도 Job Paramter가 다르면 `BATCH_JOB_INSTANCE`에는 기록된다. Job PAramter가 성공한 이력이 있을 경우 똑같은 값은 실행되지 않는다. `JobInstanceAlreadyCompleteException` 발생.
+
+``` java
+@Bean
+public Job simpleJob() {
+    return jobBuilderFactory.get("simpleJob") 
+        .start(simpleStep(null))
+        .build();
+}
+
+@Bean
+@JobScope
+public Step simpleStep1(@Value("#{jobParameters[requestDate]}") String requestDate) {
+return stepBuilderFactory.get("simpleStep1")
+    .tasklet((contribution, chunkContext) -> {
+        log.info(">>> This is Step <<<");
+        log.info(">>> requestDate = {}", requestDate);
+        return RepeatStatus.FINISHED;
+    })
+    .build();
+}
+```
+
+</br>
+
+### BATCH_JOB_INSTANCE
+![meta](../assets/spring-batch/batch-4.png)
+
+- 동일한 파라미터 실행시 `JobInstanceAlreadyCompleteException` 발생
+  
+![error](../assets/spring-batch/batch-5.png)
+
+### BATCH_JOB_EXECUTION
+`JobExecution` 객체와 관련된 모든 정보를 보유한다. Job이 실행될 때마다 항상 새 JobExecution과 새 행이 있다.
+
+### BATCH_JOB_EXECUTION_PARAMS
+
+`JobParamters` 객체와 관련된 모든 정보를 보유한다.
+
+![params](../assets/spring-batch/batch-6.png)
