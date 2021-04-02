@@ -42,20 +42,23 @@ OAuth를 이용하기 위해 Resource 서버에 등록한 애플리케이션이�
 
 client가 Resource Server에 사전 등록을 해야한다.
 
-> Client ID - 애플리케이션 식별자</br>Client Secret - 애플리케이션 식별자에 대한 비밀번호  Authorized redirect URIs - 유저가 성공적으로 애플리케이션에 인증을 마친 후, authorization servers는 해당 경로로 리디렉션한다
+> Client ID - 애플리케이션 식별자</br>Client Secret - 애플리케이션 식별자에 대한 비밀번호 </br> Authorized redirect URIs - 유저가 성공적으로 애플리케이션에 인증을 마친 후, Authorization Servers는 해당 경로로 리디렉션한다
 
-![flow](../assets/network/oauth-1.png)
-
-[reference](https://iteritory.com/tutorial-on-oauth2-implicit-grant-flow/)
+![flow](../assets/network/oauth-1.png)[reference](https://iteritory.com/tutorial-on-oauth2-implicit-grant-flow/)
+</br>
+</br>
 
 ```
-1: User**가 클라이**언트의 로그인이 필요한 자원에 접근한다.
+1: User가 클라이언트의 로그인이 필요한 자원에 접근한다.
 
-*2~3: client_id, redirect_url, response_type, scope을 포함하여 사용자의 브라우저를 Authorization Server에 리다이렉션 시킨다. 이때 Authorization Server는 파라미터로 받은 client_id와 **redirect_url**이 사전에 등록된 정보와 일치하는지 검증한다. 민감한 정보가 포함되니 일치하지 않는다면 요청이 거절된다.
+2~3: client_id, redirect_url, response_type, scope을 포함하여 사용자의 브라우저를 Authorization Server에 리다이렉션 시킨다.
+이때 Authorization Server는 파라미터로 받은 client_id와 redirect_url이 사전에 등록된 정보와 일치하는지 검증한다. 
+민감한 정보가 포함되니 일치하지 않는다면 요청이 거절된다.
 
 4~5: 로그인 페이지를 열고 User에게 Client가 등록한 scope에 대한 정보 제공 동의 허용 여부를 나타낸다. 
 
 6~12: User가 동의하고 로그에 성공하면 Resource Server는 Client에게 "Authorization code"를 발급한다.
-그리고 클라이언트는 Authorization code, client id, secret을 Resource Server에 다시 전송한다. Resource Server는 전달받은 데이터를 검증하고 "Access Token"을 Client에게 발급한다.
+그리고 클라이언트는 Authorization code, client id, secret을 Resource Server에 다시 전송한다.
+Resource Server는 전달받은 데이터를 검증하고 "Access Token"을 Client에게 발급한다.
 이제 Access Token을 이용해서 Resource Server에 데이터를 요청하고 검증이 완료되면 Resource서버는 Client에게 scope 범위의 데이터를 응답한다.
 ```
