@@ -62,3 +62,16 @@ client가 Resource Server에 사전 등록을 해야한다.
 Resource Server는 전달받은 데이터를 검증하고 "Access Token"을 Client에게 발급한다.
 이제 Access Token을 이용해서 Resource Server에 데이터를 요청하고 검증이 완료되면 Resource서버는 Client에게 scope 범위의 데이터를 응답한다.
 ```
+
+### Refresh Token
+![refresh](../assets/network/oauth-2.png)[reference](https://tools.ietf.org/html/rfc6749#section-1.5)
+</br>
+</br>
+`Access Token`은 보통 수명시간이 존재한다. 때문에 Acces Token이 만료될 경우 데이터에 접근할 수 없는데, 위와 같은 과정을 매번 반복하는 것은 비효율 적일 수도 있다.
+</br>
+
+(A) ~ (E) 까지는 위와 같은 과정이다. (F)에서는 이제 Acces Token이 토큰이 만료되서 데이터 엑세스가 거부된 것이다.
+
+</br>
+구현 방식마다 다르지만 그림처럼 (B)상황에서 Authorization Server는 Client에게 Acces Token을 발급할 때, Refresh Token을 함께 부여한다.</br>
+따라서 (G) 상황에서 Client는 Authorization Server에게 Refresh Token을 사용하여 새로운 Access Token을 요청한다. 마지막으로 (H)에서 클라이언트, Refresh Token의 검증이 성공할 경우 새로운 Access Token을 부여한다. (refresh token도 갱신 될 수 있다. 서버마다 상이하다)
