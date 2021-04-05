@@ -20,10 +20,10 @@
 
 ### 스프링 배치 기본 구조 & 처리 흐름도
 
-![구성](../assets/spring-batch/batch-1.png)
+![구성](../../assets/spring-batch/batch-1.png)
 [reference](https://terasoluna-batch.github.io/guideline/5.0.0.RELEASE/en/Ch02_SpringBatchArchitecture.html)
 
-![구성](../assets/spring-batch/batch-2.png)
+![구성](../../assets/spring-batch/batch-2.png)
 [reference](https://terasoluna-batch.github.io/guideline/5.0.0.RELEASE/en/Ch02_SpringBatchArchitecture.html)
 
 ### Job
@@ -55,7 +55,7 @@ public Job simpleJob() {
 ## Meta-Data Schema
 
 
-![meta](../assets/spring-batch/batch-3.png)
+![meta](../../assets/spring-batch/batch-3.png)
 [reference](https://docs.spring.io/spring-batch/docs/current/reference/html/schema-appendix.html)
 
 
