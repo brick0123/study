@@ -14,17 +14,17 @@
 |Datbase|JPA|페이징 사용 가능
 |File|Flat file|지정한 구분자로 파싱 지원
 |File|XML|XML 파싱 지원
-<<<<<<< HEAD
 
 </br>
 
 ### 스프링 배치 기본 구조 & 처리 흐름도
 
 ![구성](../../assets/spring-batch/batch-1.png)
+</br>
 [reference](https://terasoluna-batch.github.io/guideline/5.0.0.RELEASE/en/Ch02_SpringBatchArchitecture.html)
 
 ![구성](../../assets/spring-batch/batch-2.png)
-[reference](https://terasoluna-batch.github.io/guideline/5.0.0.RELEASE/en/Ch02_SpringBatchArchitecture.html)
+[source](https://terasoluna-batch.github.io/guideline/5.0.0.RELEASE/en/Ch02_SpringBatchArchitecture.html)
 
 ### Job
 - 일련의 프로세스를 요약하는 단일 실행 단위.
@@ -55,8 +55,8 @@ public Job simpleJob() {
 ## Meta-Data Schema
 
 
-![meta](../../assets/spring-batch/batch-3.png)
-[reference](https://docs.spring.io/spring-batch/docs/current/reference/html/schema-appendix.html)
+![meta](../../assets/spring-batch/batch-3.png)</br>
+[source](https://docs.spring.io/spring-batch/docs/current/reference/html/schema-appendix.html)
 
 
 ### BATCH_JOB_INSTANCE
@@ -88,11 +88,11 @@ return stepBuilderFactory.get("simpleStep1")
 </br>
 
 ### BATCH_JOB_INSTANCE
-![meta](../assets/spring-batch/batch-4.png)
+![meta](../../assets/spring-batch/batch-4.png)
 
 - 동일한 파라미터 실행시 `JobInstanceAlreadyCompleteException` 발생
   
-![error](../assets/spring-batch/batch-5.png)
+![error](../../assets/spring-batch/batch-5.png)
 
 ### BATCH_JOB_EXECUTION
 `JobExecution` 객체와 관련된 모든 정보를 보유한다. Job이 실행될 때마다 항상 새 JobExecution과 새 행이 있다.
@@ -101,7 +101,7 @@ return stepBuilderFactory.get("simpleStep1")
 
 `JobParamters` 객체와 관련된 모든 정보를 보유한다.
 
-![params](../assets/spring-batch/batch-6.png)
+![params](../../assets/spring-batch/batch-6.png)
 
 ---
 
@@ -142,32 +142,32 @@ public class ConditionalJob {
     @Bean
     public Step conditionalJobStep1() {
         return stepBuilderFactory.get("step1")
-                .tasklet((contribution, chunkContext) -> {
-                    log.info(">>>>> This is Step1");
-                    contribution.setExitStatus(ExitStatus.FAILED); // Status Failed
-                    return RepeatStatus.FINISHED;
-                })
-                .build();
+            .tasklet((contribution, chunkContext) -> {
+                log.info(">>>>> This is Step1");
+                contribution.setExitStatus(ExitStatus.FAILED); // Status Failed
+                return RepeatStatus.FINISHED;
+            })
+            .build();
     }
 
     @Bean
     public Step step2() {
         return stepBuilderFactory.get("step2")
-                .tasklet((contribution, chunkContext) -> {
-                    log.info(">>>>> This is Step2");
-                    return RepeatStatus.FINISHED;
-                })
-                .build();
+            .tasklet((contribution, chunkContext) -> {
+                log.info(">>>>> This is Step2");
+                return RepeatStatus.FINISHED;
+            })
+            .build();
     }
 
     @Bean
     public Step step3() {
         return stepBuilderFactory.get("step3")
-                .tasklet((contribution, chunkContext) -> {
-                    log.info(">>>>> This is Step3");
-                    return RepeatStatus.FINISHED;
-                })
-                .build();
+            .tasklet((contribution, chunkContext) -> {
+                log.info(">>>>> This is Step3");
+                return RepeatStatus.FINISHED;
+            })
+            .build();
     }
 }
 ```
@@ -256,7 +256,7 @@ spring batch의 장점 중 하나가 `Chunk` 지향 처리다.
 
 - Chunk: 커밋 사이에 처리되는 row 수. Chunk 지향 처리란 **한 번에 하나씩 데이터를 읽어 Chunk 덩어리를 만든 뒤**, **Chunk 단위로 트랜잭션을 다룬다**.
 
-![chunk_process](../../assets/spring-batch/batch-7.png)
+![chunk_process](../../assets/spring-batch/batch-7.png)</br>
 [Source](https://docs.spring.io/spring-batch/docs/current/reference/html/step.html)
 
 - Reader와 Processor에서는 단건으로 다루고, Writer에선 Chunk 단위로 일괄 처리한다.
@@ -269,36 +269,30 @@ spring batch의 장점 중 하나가 `Chunk` 지향 처리다.
 
 ItemReader에서 read가 이루어지는 과정
 ```java
- @Override
-	protected T doRead() throws Exception {
+@Override
+protected T doRead() throws Exception {
+    synchronized (lock) {
+        if (results == null || current >= pageSize) {
 
-		synchronized (lock) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Reading page " + getPage());
+            }
+            doReadPage();
+            page++;
+            if (current >= pageSize) {
+                current = 0;
+            }
+        }
 
-			if (results == null || current >= pageSize) {
-
-				if (logger.isDebugEnabled()) {
-					logger.debug("Reading page " + getPage());
-				}
-
-				doReadPage();
-				page++;
-				if (current >= pageSize) {
-					current = 0;
-				}
-
-			}
-
-			int next = current++;
-			if (next < results.size()) {
-				return results.get(next);
-			}
-			else {
-				return null;
-			}
-
-		}
-
-	}
+        int next = current++;
+        if (next < results.size()) {
+            return results.get(next);
+        }
+        else {
+            return null;
+        }
+    }
+}
 ```
 
 `pageSize` 단위로 이루어진다. Chunk Size와 Page Size가 다를 경우 불필요한 조회가 발생할 수 있으므로 성능상 이슈가 발생할 수 있다.
