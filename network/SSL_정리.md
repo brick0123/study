@@ -62,7 +62,6 @@ Figure 1: Comparing TCP/IP and TCP/IP with TLS/SSL.
 
 위 내용은 CA에 의해서 암호화 된다. 이때 사용하는 암호화 기법은 공개키 방식이다. CA는 자신의 CA 비공개키를 이용하여 서버거 제출한 인증서를 암호화 하는 것이다.
 
-![sslLayer](../assets/network/ssl-1.png)
 
 ### CA를 브라우저는 알고 있다.
 

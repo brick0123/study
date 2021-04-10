@@ -18,23 +18,23 @@ OAuth는 2007년에 최초에 등장했으며 2010년에  OAuth 1.0 프로토콜
 
 ## 용어
 
-### **Resource owner**:
+### **Resource owner**
 
 User(보호된 자원에 대한 엑세스 권한을 부여할 수 있는 사용자)
 
-### Client: Resource
+### **Client**
 
 OAuth를 이용하기 위해 Resource 서버에 등록한 애플리케이션이나 웹 서비스.
 
-### **Resource server**:
+### **Resource server**
 
 허용할 수 있는 보호된 리소스를 호스팅하는 서버, 엑세스 토큰을 사용하여 보호된 리소스 요청에 응답한다.
 
 ### **Authorization server**
 
-성공적으로 인증을 마친 클라이언트에게 엑세스 토큰을 발급하는 resource owner.
+성공적으로 인증을 마친 클라이언트에게 엑세스 토큰을 발급하는 Server.
 
-[공식 표준 문서](https://tools.ietf.org/html/rfc6749#section-1.2)에는 Resource server와 Authorization server를 구분짓지만, 일반적으로 Resource owner하나로 통용하곤 한다.
+[공식 표준 문서](https://tools.ietf.org/html/rfc6749#section-1.2)에는 Resource server와 Authorization server를 구분짓지만, 일반적으로 Resource server하나로 통용하곤 한다.
 
 ## OAuth 2.0 flow
 
