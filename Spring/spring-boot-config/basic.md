@@ -17,3 +17,7 @@ Logback Config - logback-spring.xml, logback-spring.groovy
   <logger name="com.woodcock" level="DEBUG"/>
 </configuration>
 ```
+
+### SOP, CORS
+스프링 부트 CORS 설정
+
