@@ -57,8 +57,9 @@ client가 Resource Server에 사전 등록을 해야한다.
 
 4~5: 로그인 페이지를 열고 User에게 Client가 등록한 scope에 대한 정보 제공 동의 허용 여부를 나타낸다. 
 
-6~12: User가 동의하고 로그에 성공하면 Resource Server는 Client에게 "Authorization code"를 발급한다.
-그리고 클라이언트는 Authorization code, client id, secret을 Resource Server에 다시 전송한다.
+6~12: User가 동의하고 로그에 성공하면 Authorization Server는 Client에게 "Authorization code"를 발급한다.
+그리고 클라이언트는 Authorization code, client id, secret을 Authorization Server에 다시 전송한다.
+
 Resource Server는 전달받은 데이터를 검증하고 "Access Token"을 Client에게 발급한다.
 이제 Access Token을 이용해서 Resource Server에 데이터를 요청하고 검증이 완료되면 Resource서버는 Client에게 scope 범위의 데이터를 응답한다.
 ```
