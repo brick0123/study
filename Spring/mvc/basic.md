@@ -55,3 +55,12 @@ HttpServletRequest request, HttpServletResponse response
 단순 MVC 패턴만 이용하면 공통적으로 무언가를 처리하기 힘들다는 점이 있다. 이 문제점을 해결하려면 컨트롤러 호출 전에 공통 기능을 처리해야 하는데, 
 
 `Front Controller` 패턴을 도입하여 이런 문제점을 해결할 수 있다. 스프링 MVC 핵심도 여기에 있다.
+
+# Front Controller Pattern
+![front](../../assets/mvc/mvc-2.png)  </br>
+[source](https://developer.ucsd.edu/develop/user-interface-3/applying-mvc.html)
+
+</br>
+
+웹 서버에 요청이 들어오면 기존의 방식에서는 컨트롤러가 각각 요청을 받아서 독립적으로 실행되었다. 이렇게 수 많은 컨트롤러들이 요청을 독립적으로 실행되면 공통 처리하는 게 어렵기 떄문에 중복이 많이 발생한다. </br>
+`FrontController`패턴은 모든 요청을 **한 곳**에서 일괄적으로 처리해주는 것이다. 프론트 컨트롤러 하나로 클라이언트의 요청을 받아서, 요청에 맞는 알맞은 컨트롤러를 찾아서 호출해준다. 입구를 하나를 이용하여 클라이언트의 요청을 받으니 공통 처리도 가능해진다. 스프링 웹 MVC의 `DispatcherServlet`이 FrontController 패턴으로 구현되어있다.
