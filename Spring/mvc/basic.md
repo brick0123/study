@@ -64,3 +64,109 @@ HttpServletRequest request, HttpServletResponse response
 
 웹 서버에 요청이 들어오면 기존의 방식에서는 컨트롤러가 각각 요청을 받아서 독립적으로 실행되었다. 이렇게 수 많은 컨트롤러들이 요청을 독립적으로 실행되면 공통 처리하는 게 어렵기 떄문에 중복이 많이 발생한다. </br>
 `FrontController`패턴은 모든 요청을 **한 곳**에서 일괄적으로 처리해주는 것이다. 프론트 컨트롤러 하나로 클라이언트의 요청을 받아서, 요청에 맞는 알맞은 컨트롤러를 찾아서 호출해준다. 입구를 하나를 이용하여 클라이언트의 요청을 받으니 공통 처리도 가능해진다. 스프링 웹 MVC의 `DispatcherServlet`이 FrontController 패턴으로 구현되어있다.
+
+ </br>
+
+# Flow
+
+![flow](../../assets/mvc/mvc-3.png)</br>
+[source](https://terasolunaorg.github.io/guideline/1.0.1.RELEASE/en/Overview/SpringMVCOverview.html)
+
+
+1. `DispatcherServlet`에서 모든 요청을 받는다. (스프링 부트는 DispatcherServlet을 자동으로 등록하면서 모든 경로에 대해서 매핑한다), 서블릿이 호출되면 DispatcherServicet의 부모인 `FrameworkServlet`의 `doService()`메서드를 호출한다. 해당 메서드는 DispatcherServlet에서 오버라이딩 했다. doService()를 시작으로 여러 메서드를 실행하며 `doDispatch()`도 여기서 실행된다.
+2. DispatcherServlet은 요청 URL을 실행할 수 있는 `Handler`를 `HandlerMapping`을 통해 찾는다.
+3. Handler를 실행할 수 있는 `HandlerAdapter`를 조회한 후 Handler 어뎁터를 실행한다.
+4. HandlerAdapter는 핸들러(Controller)의 실제 비즈니스 로직을 호출한다.
+5. 컨트롤러는 비즈니스 로직을 호출(실행) 하고 결과를 `Model`에 담은 뒤 논리적은 view name을 반환한다.
+6. DispatcherServlet은 `viewResolver`에 전달하고 실행하고, 뷰의 논리 이름을 물리 이름으로 변경한 뒤 뷰 객체를 반환한다.
+7. `View`를 통하여 Model과 응답을 렌더링한다.
+
+## HandlerMapping
+
+DispatcherServlet에 클라이언트 요청이 들어오면, `HandlerMapping`은 요청과 `handler object` 간의 매핑을 정의하는 인터페이스. (HTTP요청을 처리할 컨트롤러를 찾는다)
+
+``` java
+protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+  ..
+  mappedHandler = getHandler(processedRequest);
+  ...
+}
+
+	protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
+		if (this.handlerMappings != null) {
+			for (HandlerMapping mapping : this.handlerMappings) {
+				HandlerExecutionChain handler = mapping.getHandler(request);
+				if (handler != null) {
+					return handler;
+				}
+			}
+		}
+		return null;
+	}
+```
+
+``` java
+public interface HandlerMapping {
+	HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception;
+}
+```
+
+### BeanNameUrlHandlerMapping
+
+- 요청 URL과 일치하는 빈의 이름을 반환한다.
+
+### SimpleUrlHandlerMapping
+- 빈 인스턴스와 URL 또는 빈 이름과 URL를 직접 매핑할 수 있다.
+
+### RequestMappingHandlerMapping
+- 일반적으로 가장 많이 사용되는 것으로 URL과  `@RequestMapping` 의 URL이 일치하는 컨트롤러를 매핑시킨다. 
+
+``` java
+@Configuration
+public class SimpleUrlHandlerMappingConfig {
+
+    @Bean
+    public SimpleUrlHandlerMapping simpleUrlHandlerMapping() {
+        SimpleUrlHandlerMapping simpleUrlHandlerMapping
+          = new SimpleUrlHandlerMapping();
+        
+        Map<String, Object> urlMap = new HashMap<>();
+        urlMap.put("/simpleUrlWelcome", welcome());
+        simpleUrlHandlerMapping.setUrlMap(urlMap);
+        
+        return simpleUrlHandlerMapping;
+    }
+
+    @Bean
+    public WelcomeController welcome() {
+        return new WelcomeController();
+    }
+}
+```
+
+## HandlerAdapter
+
+`HandlerMapping` 통해 가져온 핸들러를 실행시키는 역할을 한다. `support` 메서드를 통하여 해당 핸들러를 실행할 수 있는 어뎁터를 찾은 뒤, `handle` 메서드를 실행하여 `ModelAndView` 를 반환한다.
+
+``` java
+	protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		...
+		HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());	// 핸들러 어댑터 찾기
+
+		mv = ha.handle(processedRequest, response, mappedHandler.getHandler()); // 핸들러 어뎁터를 통해 핸들러 실행하여 ModelAndView 반환
+    ..
+	}
+```
+
+``` java
+	protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		...
+		HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());	// 핸들러 어댑터 찾기
+
+		mv = ha.handle(processedRequest, response, mappedHandler.getHandler()); // 핸들러 어뎁터를 통해 핸들러 실행하여 ModelAndView 반환
+	}
+```
+
+### RequestMappingHandlerAdapter
+
+HandlerAdapter를 구현한 추상 클래스 `AbstractHandlerMethodAdapter` 를 확장시켜서 `@RequestMapping`  어노테이션을 지원하는 어댑터.
