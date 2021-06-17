@@ -73,7 +73,7 @@ HttpServletRequest request, HttpServletResponse response
 [source](https://terasolunaorg.github.io/guideline/1.0.1.RELEASE/en/Overview/SpringMVCOverview.html)
 
 
-1. `DispatcherServlet`에서 모든 요청을 받는다. (스프링 부트는 DispatcherServlet을 자동으로 등록하면서 모든 경로에 대해서 매핑한다), 서블릿이 호출되면 DispatcherServicet의 부모인 `FrameworkServlet`의 `doService()`메서드를 호출한다. 해당 메서드는 DispatcherServlet에서 오버라이딩 했다. doService()를 시작으로 여러 메서드를 실행하며 `doDispatch()`도 여기서 실행된다.
+1. `DispatcherServlet`에서 모든 요청을 받는다. (스프링 부트는 DispatcherServlet을 자동으로 등록하면서 모든 경로에 대해서 매핑한다), 서블릿이 호출되면 DispatcherServicet의 부모인 `FrameworkServlet`의 `service()`메서드를 호출한다. 해당 메서드는 DispatcherServlet에서 오버라이딩 했다. service()를 시작으로 여러 메서드를 실행하며 `doDispatch()`도 여기서 실행된다.
 2. DispatcherServlet은 요청 URL을 실행할 수 있는 `Handler`를 `HandlerMapping`을 통해 찾는다.
 3. Handler를 실행할 수 있는 `HandlerAdapter`를 조회한 후 Handler 어뎁터를 실행한다.
 4. HandlerAdapter는 핸들러(Controller)의 실제 비즈니스 로직을 호출한다.
